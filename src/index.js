@@ -1,5 +1,3 @@
-// require("babel-core/register");
-// require("babel-polyfill");
 
 import {createConnection} from "typeorm";
 import {Post} from "./entity/Post";
@@ -9,14 +7,37 @@ import express from "express"
 import bodyParser from "body-parser"
 
 // connection settings are in the "ormconfig.json" file
-createConnection().then(connection => {
-  console.log('hey')
-
+createConnection({
+  "name": "default",
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "jamesweber",
+  "password": "",
+  "database": "typeorm_poc",
+  "synchronize": true,
+  "entities": [
+    "dist/entity/*.js"
+  ],
+  "subscribers": [
+    "dist/subscriber/*.js"
+  ],
+  "migrations": [
+    "dist/migration/*.js"
+  ],
+  "cli": {
+    "entitiesDir": "dist/entity",
+    "migrationsDir": "dist/migration",
+    "subscribersDir": "dist/subscriber"
+  }
+}).then(connection => {
+  console.log(connection.options)
   const app = express();
   app.use(bodyParser.json());
 
   // register express routes from defined application routes
   Routes.forEach(route => {
+
     (app)[route.method](route.route, (req, res, next) => {
         const result = (new (route.controller))[route.action](req, res, next);
         if (result instanceof Promise) {
