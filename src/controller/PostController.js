@@ -1,13 +1,15 @@
 import {getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
-import {Post} from "../entity/Post";
+import {getPost} from "../entity/Post";
 
 export class PostController {
-  constructor() {
-    this.postRepository = getRepository(Post);
+  constructor(targetDb) {
+    // console.log(targetDb)
+    this.postRepository = getRepository(getPost());
   }
 
   async all(request, response, next) {
+    // console.log(request.headers['target-db'])
       return this.postRepository.find();
   }
 

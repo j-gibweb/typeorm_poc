@@ -14,7 +14,7 @@ createConnection({
   "port": 5432,
   "username": "jamesweber",
   "password": "",
-  "database": "typeorm_poc",
+  "database": "typeorm_poc2",
   "synchronize": true,
   "entities": [
     "dist/entity/*.js"
@@ -31,7 +31,7 @@ createConnection({
     "subscribersDir": "dist/subscriber"
   }
 }).then(connection => {
-  console.log(connection.options)
+  // console.log(connection.options)
   const app = express();
   app.use(bodyParser.json());
 
@@ -39,7 +39,7 @@ createConnection({
   Routes.forEach(route => {
 
     (app)[route.method](route.route, (req, res, next) => {
-        const result = (new (route.controller))[route.action](req, res, next);
+        const result = (new (route.controller)(req.headers['target-db']))[route.action](req, res, next);
         if (result instanceof Promise) {
             result.then(result => result !== null && result !== undefined ? res.send(result) : undefined);
 
@@ -54,16 +54,16 @@ createConnection({
   app.listen(8888);
   console.log("Express server has started on port 3000. Open http://localhost:3000/posts");
 
-  // const category1 = new Category();
-  // category1.name = "TypeScript";
+  const category1 = new Category();
+  category1.name = "TypeScript";
 
-  // const category2 = new Category();
-  // category2.name = "Programming";
+  const category2 = new Category();
+  category2.name = "Programming";
 
-  // const post = new Post();
-  // post.title = "Control flow based type analysis";
-  // post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
-  // post.categories = [category1, category2];
+  const post = new Post();
+  post.title = "Control flow based type analysis 2";
+  post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
+  post.categories = [category1, category2];
 
   // return connection
   //   .getRepository(Post)

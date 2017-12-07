@@ -8,21 +8,26 @@ import {
 } from "typeorm";
 import {Category} from "./Category";
 
-@Entity()
-export class Post {
-	
-	@PrimaryGeneratedColumn('uuid')
-	// @PrimaryColumn('uuid')
-	id = undefined;
-	
-	@Column("varchar")
-	title = "";
-	
-	@Column("text")
-	text = "";
-	
-	@ManyToMany(type => Category, { cascadeInsert: true })
-	@JoinTable()
-	categories = undefined;
-	
+export function getPost(targetDb) {
+
+	@Entity()
+	class Post {
+		
+		@PrimaryGeneratedColumn('uuid')
+		// @PrimaryColumn('uuid')
+		id = undefined;
+		
+		@Column("varchar")
+		title = "";
+		
+		@Column("text")
+		text = "";
+		
+		@ManyToMany(type => Category, { cascadeInsert: true })
+		@JoinTable()
+		categories = undefined;
+		
+	}
+
+	return Post
 }
