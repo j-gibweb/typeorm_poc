@@ -17,7 +17,7 @@ export const Routes = [{
     action: "save"
 }, {
     method: "delete",
-    route: "/posts",
+    route: "/posts/:id",
     controller: PostController,
     action: "remove"
 }];

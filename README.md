@@ -1,12 +1,18 @@
 # Example how to use [TypeORM](https://github.com/typeorm/typeorm) with JavaScript + Babel
 
-1. clone repository 
-2. run `npm i`
-3. edit `ormconfig.json` and change your database configuration (you can also change a database type, but don't forget to install specific database drivers)
-4. run `npm start`
-5. enjoy!
+clone repository 
+`npm i`
 
-## How to use CLI?
+install `watch` -- `npm i -g watch`
 
-1. install `typeorm` globally: `npm i -g typeorm`
-2. run `typeorm -h` to show list of available commands
+in two different windows, from project root, run
+
+`watch "npm run build" ./src/` -- this will watch the src/ dir and rebuild on file changes
+
+and
+
+`npm run start` -- this will run the server with nodemon and restart it whenever the package rebuilds
+
+I'm trying to decide between Typeorm and [Sequelize](http://docs.sequelizejs.com/)
+
+this repo might require other global dependencies `:(` like `babel-cli` or something

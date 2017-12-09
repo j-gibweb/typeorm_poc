@@ -56,22 +56,27 @@ createConnections(connectionConfigs).then(async connections => {
     
     // app.get('/posts', (req, res, next) => {
     (app)[route.method](route.route, (req, res, next) => {
-    
-      // const result = new PostController().get(req, res, next);
-        const result = (new (route.controller))[route.action](req, res, next);
+      const dbName = req.headers['target-db'];
+      
+      if (!dbName) {
+        return res.send({message: "must provide db name"})
+      }
+
+      // const result = new PostController("type_orm_database").get(req, res, next);
+        const result = (new (route.controller)(dbName))[route.action](req, res, next);
+        
         if (result instanceof Promise) {
-
-            result.then((result) => {
-              if (result !== null && result !== undefined) {
-                return res.send(result)
-              } else {
-                return res.send({message: 'not found or something'})
-              }
-            });
             
-
+          result.then((result) => {
+            if (result !== null && result !== undefined) {
+              return res.send(result)
+            } else {
+              return res.send({message: 'not found or something'})
+            }
+          });
+            
         } else if (result !== null && result !== undefined) {
-            res.json(result);
+          res.json(result);
         }
 
     });

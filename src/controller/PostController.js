@@ -5,25 +5,28 @@ import {
 import {Post} from "../entity/Post";
 
 export class PostController {
-  constructor() {}
+  // can pull this out into parent class and call super(...args)
+  constructor(dbName) {
+    this.manager = getConnection(dbName).manager;
+    this.repository = this.manager.connection.getRepository(Post);
+  }
 
   async all(request, response, next) {
-    const dbName = request.headers['target-db'];
-    return getConnection(dbName).manager.find(Post);
+    return this.manager.find(Post);
   }
 
   async one(request, response, next) {
-    const dbName = request.headers['target-db'];
-    // return this.postRepository.findOneById(request.params.id);
-    return getConnection(dbName).manager.findOneById(Post, request.params.id);
+    return this.manager.findOneById(Post, request.params.id);
   }
 
   async save(request, response, next) {
-    // return this.postRepository.save(request.body);
+    let post = this.repository.create(request.body);
+    return this.repository.save(post);
   }
 
   async remove(request, response, next) {
-    // await this.postRepository.removeById(request.params.id);
+    await this.repository.removeById(request.params.id);
+    return {message: "Post Deleted"}
   }
 
 }
