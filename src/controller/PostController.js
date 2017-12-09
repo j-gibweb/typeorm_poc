@@ -1,28 +1,29 @@
-import {getRepository} from "typeorm";
-import {NextFunction, Request, Response} from "express";
-import {getPost} from "../entity/Post";
+import {
+  getConnection
+} from "typeorm";
+
+import {Post} from "../entity/Post";
 
 export class PostController {
-  constructor(targetDb) {
-    // console.log(targetDb)
-    this.postRepository = getRepository(getPost());
-  }
+  constructor() {}
 
   async all(request, response, next) {
-    // console.log(request.headers['target-db'])
-      return this.postRepository.find();
+    const dbName = request.headers['target-db'];
+    return getConnection(dbName).manager.find(Post);
   }
 
   async one(request, response, next) {
-      return this.postRepository.findOneById(request.params.id);
+    const dbName = request.headers['target-db'];
+    // return this.postRepository.findOneById(request.params.id);
+    return getConnection(dbName).manager.findOneById(Post, request.params.id);
   }
 
   async save(request, response, next) {
-      return this.postRepository.save(request.body);
+    // return this.postRepository.save(request.body);
   }
 
   async remove(request, response, next) {
-      await this.postRepository.removeById(request.params.id);
+    // await this.postRepository.removeById(request.params.id);
   }
 
 }

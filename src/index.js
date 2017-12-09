@@ -1,20 +1,20 @@
 
-import {createConnection} from "typeorm";
+import {createConnection, createConnections} from "typeorm";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {Routes} from "./routes";
 import express from "express"
 import bodyParser from "body-parser"
 
-// connection settings are in the "ormconfig.json" file
-createConnection({
-  "name": "default",
+
+const commonOptions = {
+  // "name": "default",
   "type": "postgres",
   "host": "localhost",
   "port": 5432,
   "username": "jamesweber",
   "password": "",
-  "database": "typeorm_poc2",
+  // "database": "typeorm_poc",
   "synchronize": true,
   "entities": [
     "dist/entity/*.js"
@@ -29,41 +29,63 @@ createConnection({
     "entitiesDir": "dist/entity",
     "migrationsDir": "dist/migration",
     "subscribersDir": "dist/subscriber"
+  },
+  logging: true
+};
+
+const customerDBs = [
+  "typeorm_poc",
+  "typeorm_poc2"
+];
+
+const connectionConfigs = customerDBs.map((customerDBName) => {
+  return {
+    ...commonOptions,
+    name: customerDBName,
+    database: customerDBName
   }
-}).then(connection => {
-  // console.log(connection.options)
+});
+
+createConnections(connectionConfigs).then(async connections => {
+  // console.log(connection)
   const app = express();
   app.use(bodyParser.json());
 
   // register express routes from defined application routes
   Routes.forEach(route => {
-
+    
+    // app.get('/posts', (req, res, next) => {
     (app)[route.method](route.route, (req, res, next) => {
-        const result = (new (route.controller)(req.headers['target-db']))[route.action](req, res, next);
+    
+      // const result = new PostController().get(req, res, next);
+        const result = (new (route.controller))[route.action](req, res, next);
         if (result instanceof Promise) {
-            result.then(result => result !== null && result !== undefined ? res.send(result) : undefined);
+            result
+            .then(result => result !== null && result !== undefined ? res.send(result) : undefined)
+            .catch(console.error)
 
         } else if (result !== null && result !== undefined) {
             res.json(result);
         }
+
     });
+
   });
 
-
-  // start express server
+  // // start express server
   app.listen(8888);
   console.log("Express server has started on port 3000. Open http://localhost:3000/posts");
 
-  const category1 = new Category();
-  category1.name = "TypeScript";
+  // const category1 = new Category();
+  // category1.name = "TypeScript";
 
-  const category2 = new Category();
-  category2.name = "Programming";
+  // const category2 = new Category();
+  // category2.name = "Programming";
 
-  const post = new Post();
-  post.title = "Control flow based type analysis 2";
-  post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
-  post.categories = [category1, category2];
+  // const post = new Post();
+  // post.title = "Control flow based type analysis 2";
+  // post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
+  // post.categories = [category1, category2];
 
   // return connection
   //   .getRepository(Post)
