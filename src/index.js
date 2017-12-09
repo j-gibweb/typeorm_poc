@@ -60,9 +60,15 @@ createConnections(connectionConfigs).then(async connections => {
       // const result = new PostController().get(req, res, next);
         const result = (new (route.controller))[route.action](req, res, next);
         if (result instanceof Promise) {
-            result
-            .then(result => result !== null && result !== undefined ? res.send(result) : undefined)
-            .catch(console.error)
+
+            result.then((result) => {
+              if (result !== null && result !== undefined) {
+                return res.send(result)
+              } else {
+                return res.send({message: 'not found or something'})
+              }
+            });
+            
 
         } else if (result !== null && result !== undefined) {
             res.json(result);
