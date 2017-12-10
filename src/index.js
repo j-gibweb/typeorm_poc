@@ -59,7 +59,7 @@ createConnections(connectionConfigs).then(async connections => {
       const dbName = req.headers['target-db'];
       
       if (!dbName) {
-        return res.send({message: "must provide db name"})
+        return res.status(400).send({message: "must provide db name"})
       }
 
       // const result = new PostController("type_orm_database").get(req, res, next);
@@ -85,24 +85,6 @@ createConnections(connectionConfigs).then(async connections => {
 
   // // start express server
   app.listen(8888);
-  console.log("Express server has started on port 3000. Open http://localhost:3000/posts");
-
-  // const category1 = new Category();
-  // category1.name = "TypeScript";
-
-  // const category2 = new Category();
-  // category2.name = "Programming";
-
-  // const post = new Post();
-  // post.title = "Control flow based type analysis 2";
-  // post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
-  // post.categories = [category1, category2];
-
-  // return connection
-  //   .getRepository(Post)
-  //   .save(post)
-  //   .then(post => {
-  //     console.log("Post has been saved: ", post);
-  //   });
+  console.log("Express server has started on port 8888. Open http://localhost:8888/posts");
 
 }).catch(error => console.log("Error: ", error));

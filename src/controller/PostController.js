@@ -3,6 +3,7 @@ import {
 } from "typeorm";
 
 import {Post} from "../entity/Post";
+import {Category} from "../entity/Category";
 
 export class PostController {
   // can pull this out into parent class and call super(...args)
@@ -16,11 +17,19 @@ export class PostController {
   }
 
   async one(request, response, next) {
-    return this.manager.findOneById(Post, request.params.id);
+    return this.manager.findOneById(Post, request.params.id, { relations: ["categories"] });
   }
 
   async save(request, response, next) {
     let post = this.repository.create(request.body);
+    return this.repository.save(post);
+  }
+
+  async saveCategory(request, response, next) {
+    let post = await this.manager.findOneById(Post, request.params.id);
+    let category = new Category();
+    category.name = request.body.name
+    post.categories = [category];
     return this.repository.save(post);
   }
 
