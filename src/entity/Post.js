@@ -12,7 +12,7 @@ import {Category} from "./Category";
 export class Post {
 	
 	@PrimaryGeneratedColumn('uuid')
-	// @PrimaryColumn('uuid')
+	// @PrimaryColumn()
 	id = undefined;
 	
 	@Column("varchar")
@@ -21,8 +21,14 @@ export class Post {
 	@Column("text")
 	text = "";
 	
-	@ManyToMany(type => Category, { cascadeInsert: true })
+	@ManyToMany(
+		type => Category, 
+		{
+			cascadeInsert: true,
+			eager: true
+		}
+	)
 	@JoinTable()
 	categories = undefined;
-	
+
 }

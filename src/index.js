@@ -6,32 +6,7 @@ import {Routes} from "./routes";
 import express from "express"
 import bodyParser from "body-parser"
 
-
-const commonOptions = {
-  // "name": "default",
-  "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
-  "username": "jamesweber",
-  "password": "",
-  // "database": "typeorm_poc",
-  "synchronize": true,
-  "entities": [
-    "dist/entity/*.js"
-  ],
-  "subscribers": [
-    "dist/subscriber/*.js"
-  ],
-  "migrations": [
-    "dist/migration/*.js"
-  ],
-  "cli": {
-    "entitiesDir": "dist/entity",
-    "migrationsDir": "dist/migration",
-    "subscribersDir": "dist/subscriber"
-  },
-  logging: true
-};
+const commonOptions = require('../ormconfig.json')
 
 const customerDBs = [
   "typeorm_poc",
@@ -71,7 +46,8 @@ createConnections(connectionConfigs).then(async connections => {
             if (result !== null && result !== undefined) {
               return res.send(result)
             } else {
-              return res.send({message: 'not found or something'})
+              // result was null or underfined
+              return res.send({message: 'nothing was found?'})
             }
           });
             

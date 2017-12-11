@@ -17,7 +17,8 @@ export class PostController {
   }
 
   async one(request, response, next) {
-    return this.manager.findOneById(Post, request.params.id, { relations: ["categories"] });
+    // return this.manager.findOneById(Post, request.params.id, { relations: ["categories"] });
+    return this.manager.findOneById(Post, request.params.id);
   }
 
   async save(request, response, next) {
